@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Video Stream</title>
+    <style>
+        /* Simple styling to center the video frame on the page */
+        
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+        
+        img {
+            /* Adjust as needed to constrain the displayed video size */
+            max-width: 90%;
+            max-height: 90%;
+            border: 5px solid #fff;
+            box-shadow: 0 0 8px #000;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- This img tag will display the video frames -->
+    <img id="videoFrame" src="" alt="Video Stream">
+
+    <script>
+        (function() {
+            // Replace this WebSocket URL with your WebSocket server URL
+            const wsUrl = 'ws://localhost:5678/channel1';
+            const videoFrame = document.getElementById('videoFrame');
+
+            // Create WebSocket connection
+            const socket = new WebSocket(wsUrl);
+
+            // Connection opened
+            socket.addEventListener('open', function(event) {
+                console.log('Connected to WebSocket server.');
+            });
+
+            // Listen for messages from the WebSocket server
+            socket.addEventListener('message', function(event) {
+                // Assuming the server sends base64 encoded images
+                // Update the src of the img tag to display the new frame
+                videoFrame.src = 'data:image/jpeg;base64,' + event.data;
+            });
+
+            // Reconnect logic in case the WebSocket connection closes
+            socket.addEventListener('close', function() {
+                console.log('WebSocket connection closed. Attempting to reconnect...');
+                setTimeout(function() {
+                    window.location.reload();
+                }, 2000); // Attempt to reconnect by refreshing the page after 2 seconds
+            });
+
+            // Error handling
+            socket.addEventListener('error', function(error) {
+                console.error('WebSocket error:', error);
+            });
+        })();
+    </script>
+</body>
+
+</html>

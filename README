@@ -1,0 +1,1 @@
+To handle multiple channels of video streams using WebSockets, you can implement a system where each channel has its unique identifier, and clients specify the channel they want to subscribe to. On the server side, you manage a mapping of channels to connected clients. When a video frame is received for a specific channel, it is only sent to clients subscribed to that channel.
